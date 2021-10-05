@@ -47,7 +47,7 @@ def get_tweets(username):
             except:
                 tweet_status = "SUCESSFULLY COMPLETED COMMAND: "+ tweetdata + "\nREADY FOR NEXT COMMAND " + str(random.randint(1,99999))
                 status = api.update_status(status=tweet_status)               
-            time.sleep(1)
+            time.sleep(120)
         else:
             time.sleep(10)
     
